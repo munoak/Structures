@@ -22,7 +22,7 @@ int main()
 auto mid = factors.size()/2;
 if (factors.size() % 2 == 0)
 {
-cout << number << " = " << factors.at(mid) << " * " << factors.at(mid-1) << endl;
+cout << number << " = " << factors.at(mid-1) << " * " << factors.at(mid) << endl;
 }
 else
 {

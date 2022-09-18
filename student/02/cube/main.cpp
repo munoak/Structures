@@ -1,5 +1,5 @@
 #include <iostream>
-#include<limits.h>
+
 using namespace std;
 
 int main()
@@ -9,7 +9,7 @@ int main()
     cout << "Enter a number: ";
     cin >> number;
     cube = number * number * number;
-    if(cube > 0 && cube < (INT_MIN))
+    if(cube > 0  && cube < (2e3))
         cout << "The cube of " << number << " is " << cube << endl;
     else
         cout << "Error! The cube of " << number << " is not " << cube << endl;

@@ -38,7 +38,7 @@ int main()
         if(DrawnNumbers > TotalNumbers)
             cout << "The maximum number of drawn balls is the total amount of balls." << endl;
         else
-            cout << "The probability of guessing all " << DrawnNumbers << " correctly is 1/" << probability(TotalNumbers, DrawnNumbers) << endl;
+            cout << "The probability of guessing all " << DrawnNumbers << " balls correctly is 1/" << probability(TotalNumbers, DrawnNumbers) << endl;
 
 
     }

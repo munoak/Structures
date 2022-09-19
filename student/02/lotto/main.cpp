@@ -30,7 +30,7 @@ int main()
     cin >> TotalNumbers;
 
     int DrawnNumbers {1};
-    cout << "\nEnter the number of drawn balls: ";
+    cout << "Enter the number of drawn balls: ";
     cin >> DrawnNumbers;
 
     if(DrawnNumbers >0 && TotalNumbers >0)

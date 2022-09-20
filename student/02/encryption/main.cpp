@@ -55,12 +55,12 @@ int main()
     std::string message ("");
 
     std::cout << "Enter the Encryption key: ";
-    getline(std::cin, key);
+    std::cin >> key;
     check_key(key);
     letter_case_check(key);
     check_letters(key);
     std::cout << "Enter the Encryption message: ";
-    getline(std::cin, message);
+    std::cin >> message;
 
     std::cout << "Encrypted text: " << encrypt_msg(message, key)<< std::endl;
 

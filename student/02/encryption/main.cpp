@@ -1,68 +1,111 @@
 #include <iostream>
-#include<string>
+#include <string>
+#include <cctype>
 
+using namespace std;
 
-void check_key(std::string key);
-void letter_case_check(std::string key);
-void check_letters(std::string key);
-std::string encrypt_msg(std::string message, std::string key);
+const string KEY_LENGTH_ERROR = "Error! The encryption key must contain 26 characters.";
+const string KEY_CASE_ERROR = "Error! The encryption key must contain only lower case characters.";
+const string KEY_ALPHABET_ERROR = "Error! The encryption key must contain all alphabets a-z.";
+const string TEXT_CASE_ERROR = "Error! The text to be encrypted must contain only lower case characters.";
 
-std::string encrypt_msg(std::string message, std::string key)
+const int KEY_LENGTH = 26;
+
+bool check_key_length(string key)
 {
-    std::string encryted_msg ("");
-    for (uint i =0; i < message.length(); i++)
-    {
-        int a = (int) message.at(i) - (int) 'a';
-        message.at(i) = key[a];
-        encryted_msg += message.at(i);
-    }
-    return encryted_msg;
+  if(key.length() == KEY_LENGTH)
+  return true;
+  else return false;
 }
 
-void check_letters(std::string key)
+bool check_key_lowercase(string key)
 {
-    for(int i =97; i <122; i++)
+  for (char c : key)
     {
-
-        if(key.find(i) == std::string::npos){
-            std::cout << "Error! The encryption key must contain all alphabets a-z." << std::endl;
-            exit(1);}
-    }
-
-}
-
-void letter_case_check(std::string key)
-{
-    for(auto i: key)
-    {
-        if(i< 97 || i>122){
-            std::cout << "Error! The encryption key must contain only lower case characters." << std::endl;
-        exit(1);}
-    }
-
-}
-
-void check_key(std::string key)
-{
-        if(key.length() < 26){
-            std::cout << "Error! The encryption key must contain 26 characters." << std::endl;
-            exit(1);
+      if(!islower(c))
+        {
+          return false;
         }
+    }
+    return true;
 }
+
+bool check_key_alphabet(string key)
+{
+  for(int i = 97; i<=122; i++)
+    {
+      char c = i;
+      if(key.find(c) == string::npos)
+        {
+          return false;
+        }
+    }
+
+  return true;
+}
+
+
+bool check_key(string key)
+{
+  if(!check_key_length(key))
+    {
+      cout << KEY_LENGTH_ERROR << endl;
+      return false;
+    }
+
+  if(!check_key_lowercase(key))
+    {
+      cout << KEY_CASE_ERROR << endl;
+      return false;
+    }
+
+  if(!check_key_alphabet(key))
+    {
+      cout << KEY_ALPHABET_ERROR << endl;
+      return false;
+    }
+
+  return true;
+}
+
+
+string encrypt_text(string plaintext, string key)
+{
+  string encrypt_text = "";
+
+  for (uint i = 0; i < plaintext.length(); i++ )
+    {
+        char c = plaintext.at(i);
+        uint key_index = (uint) c - (uint) 'a';
+        char c_encrypt = key.at(key_index);
+        encrypt_text += c_encrypt;
+     }
+   return encrypt_text;
+}
+
+
 int main()
 {
-    std::string key ("");
-    std::string message ("");
 
-    std::cout << "Enter the Encryption key: ";
-    std::cin >> key;
-    check_key(key);
-    letter_case_check(key);
-    check_letters(key);
-    std::cout << "Enter the Encryption message: ";
-    std::cin >> message;
+  string key = "";
+  string plaintext = "";
 
-    std::cout << "Encrypted text: " << encrypt_msg(message, key)<< std::endl;
+  cout << "Enter the encryption key: ";
+  cin >> key;
 
-    return 0;
+  if(!check_key(key))
+    {
+      return EXIT_FAILURE;
+    }
+  cout << "Enter the text to be encrypted: ";
+  cin >> plaintext;
+
+  if(!check_key_lowercase(plaintext))
+    {
+      cout << TEXT_CASE_ERROR << endl;
+      return EXIT_FAILURE;
+    }
+  cout << "Encrypted text: "<< encrypt_text(plaintext,key) << endl;
+
+  return 0;
 }

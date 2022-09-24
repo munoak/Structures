@@ -10,7 +10,7 @@ void produce_random_numbers(unsigned int lower, unsigned int upper)
     int SeedVal {};
     cout << "Enter a seed value: ";
     cin >> SeedVal;
-    default_random_engine gen(42);
+    default_random_engine gen(SeedVal);
     uniform_int_distribution<int> distr(lower, upper);
 
     char PressBtn {};

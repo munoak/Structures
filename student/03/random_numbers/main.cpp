@@ -15,7 +15,7 @@ void produce_random_numbers(unsigned int lower, unsigned int upper)
 
     char PressBtn {};
     do{
-        cout <<"\n Your drawn random number is "<<distr(gen) << std::endl;
+        cout <<"\nYour drawn random number is "<<distr(gen) << std::endl;
         cout << "Press q to quit or any other key to continue: ";
         cin >> PressBtn;
     } while(PressBtn != 'q' );

@@ -11,7 +11,7 @@ private:
     std::string author = "";
     Date loan_date;
     Date due_date;
-    bool available = true;
+    bool is_loaned = false;
 
 public:
     Book (const std::string& title, const std::string& author);

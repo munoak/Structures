@@ -6,7 +6,7 @@ Book::Book(const std::string& title, const std::string& author): title(title), a
 {
 
 }
-void Book::print()
+void Book::print() const
 {
     std::cout << title << " : " << author << std::endl;
     if(available)

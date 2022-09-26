@@ -15,7 +15,7 @@ private:
 
 public:
     Book (const std::string& title, const std::string& author);
-    void print();
+    void print() const;
     void loan(Date&);
     void renew();
     void give_back();

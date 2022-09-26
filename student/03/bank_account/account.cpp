@@ -1,11 +1,46 @@
 #include "account.hh"
 #include <iostream>
 
-Account::Account(const std::string& owner, bool has_credit):
+Account::Account(const std::string& owner, bool has_credit): owner(owner), has_credit(has_credit)
 {
-    generate_iban();
+    Account::generate_iban();
 }
+void Account::set_credit_limit(int limit){
+    if(this -> has_credit)
+        credit_limit = limit;
+    else
+        std::cout << "Cannot set credit limit: the account has no credit card" << std::endl;
+}
+void Account::transfer_to(Account &Acc, double amount){
+    if(((balance +credit_limit) - amount ) < 0){
+        std::cout << "Cannot take money: balance underflow" << std::endl;
+        std::cout << "Transfer from " << iban_ << " failed" << std::endl;
+    }
+    else
+    {
+    this -> balance -=amount;
+    Acc.balance += amount;
+    std::cout << amount << " euros taken: new balance of " << iban_ << " is " << balance << " euros " << std::endl;
+    }
+}
+void Account::save_money(double amount) {
+    balance += amount;
+}
+void Account::take_money(double amount) {
 
+
+    if (((this -> balance + credit_limit) - amount) < 0 )
+       std::cout << "Cannot take money: balance underflow" << std::endl;
+    else
+    {
+    balance -= amount;
+    std::cout << amount << " euros taken: new balance of " << iban_ << " is " << balance << " euros " << std::endl;
+    }
+}
+void Account::print() const
+{
+std::cout << owner << " : " << iban_ << " : " << balance << " euros" << std::endl;
+}
 // Setting initial value for the static attribute running_number_
 int Account::running_number_ = 0;
 

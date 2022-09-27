@@ -1,10 +1,9 @@
 #include "player.hh"
 
-int half_pts =25;
-int full_pts = 50;
-
-Player::Player (std::string const &name): name(name), score(0)
+Player::Player(std::string const &name):
+    points(0), name(name)
 {
+
 
 }
 
@@ -15,19 +14,19 @@ std::string Player::get_name() const
 
 int Player::get_points() const
 {
-    return score;
+    return points;
 }
 
-void Player::add_points(int score)
+void Player::add_points(int points)
 {
-    score += score;
-        if(score > full_pts)
-        {
-            score= half_pts;
-        }
+    points += points;
+    if(points > full_scr)
+    {
+        points= half_scr;
+    }
 }
 
 bool Player::has_won()
 {
-    return score == full_pts;
+    return points== full_scr;
 }

@@ -1,47 +1,54 @@
-#include <iostream>
 #include "book.hh"
-#include "date.hh"
 
-Book::Book(const std::string& title, const std::string& author)
-    : title(title), author(author), loan_date(Date()), due_date(Date())
+Book::Book()
 {
 
 }
-void Book::print() const
+
+Book::Book(const std::string &title, const std::string &author)
 {
-    std::cout << title << " : " << author << std::endl;
-    if(is_loaned)
-    {
-        std::cout << "- loaned: ";
-        loan_date.print();
-        std::cout << "- to be returend: ";
+    title_ = title;
+    author_ = author;
+    is_loaned = false;
+}
+
+void Book::print()
+{
+    cout << title_ << " : " << author_ << '\n';
+    if(is_loaned){
+        cout << "- loaned: ";
+        loaning_date.print();
+        cout << "- to be returned: ";
         due_date.print();
     }
-    else std::cout << "- available" << std::endl;
-
-}
-void Book::loan(Date& date)
-{
-    if(is_loaned) std::cout << "Already loaned: cannot be loaned " << std::endl;
     else
-    {
-        loan_date = date;
-        due_date = loan_date;
-        due_date.advance(28);
+        cout << "- available\n";
+}
+
+void Book::loan(Date &date)
+{
+    if(!is_loaned){
+        Date due_date_ = date;
+        due_date_.advance(28);
+        loaning_date = date;
+        due_date = due_date_;
         is_loaned = true;
+    }
+    else
+        cout << "Already loaned: cannot be loaned\n";
+}
+
+void Book::renew()
+{
+    if(!is_loaned)
+        cout << "Not loaned: cannot be renewed\n";
+    else{
+        due_date.advance(28);
     }
 
 }
-void Book::renew(){
-if(is_loaned)
-    due_date.advance(28);
-else
-    std::cout << "Not loaned: cannot be renewed" << std::endl;
 
-
-
-}
 void Book::give_back()
 {
-is_loaned = false;
+    is_loaned = false;
 }

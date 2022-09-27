@@ -1,22 +1,25 @@
 #ifndef BOOK_HH
 #define BOOK_HH
-
+#include <iostream>
 #include <string>
 #include "date.hh"
 
-class Book {
-private:
+using namespace std;
 
-    std::string title = "";
-    std::string author = "";
-    Date loan_date;
+class Book
+{
+private:
+    std::string title_;
+    std::string author_;
+    bool is_loaned;
+    Date loaning_date;
     Date due_date;
-    bool is_loaned = false;
 
 public:
-    Book (const std::string& title, const std::string& author);
-    void print() const;
-    void loan(Date&);
+    Book();
+    Book(const std::string& title, const std::string& author);
+    void print();
+    void loan(Date &date);
     void renew();
     void give_back();
 };

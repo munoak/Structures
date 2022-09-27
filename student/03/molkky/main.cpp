@@ -1,8 +1,7 @@
-#include "player.hh"
-#include <cstdlib>
 #include <iostream>
+#include "player.hh"
 #include <string>
-
+#include <cstdlib>
 
 int main()
 {

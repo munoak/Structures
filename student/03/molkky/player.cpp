@@ -1,7 +1,7 @@
 #include "player.hh"
 
 Player::Player(std::string const &name):
-    points(0), name(name)
+    points_(0), name_(name)
 {
 
 
@@ -9,24 +9,24 @@ Player::Player(std::string const &name):
 
 std::string Player::get_name() const
 {
-    return name;
+    return name_;
 }
 
 int Player::get_points() const
 {
-    return points;
+    return points_;
 }
 
 void Player::add_points(int points)
 {
-    points += points;
-    if(points > full_scr)
+    points_ += points;
+    if(points_ > MAX_SCORE)
     {
-        points= half_scr;
+        points_= HALFWAY_SCORE;
     }
 }
 
 bool Player::has_won()
 {
-    return points== full_scr;
+    return points_== MAX_SCORE;
 }

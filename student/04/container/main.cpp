@@ -49,17 +49,17 @@ bool is_arithmetic_series(std::vector< int >& ints)
     return false;
 }
 
-bool is_geometric_series(std::vector< int >& ints)
-{
-    for(uint i=0 ; i < ints.size() + 2; i++)
-    {
-        uint r {};
-        r = ints.at(1) / ints.at(0);
-        if((ints.at(i+2) - ints.at(i+1)) == )
-            return true;
-    }
-    return false;
-}
+//bool is_geometric_series(std::vector< int >& ints)
+//{
+//    for(uint i=0 ; i < ints.size() + 2; i++)
+//    {
+//        uint r {};
+//        r = ints.at(1) / ints.at(0);
+//        if((ints.at(i+2) - ints.at(i+1)) == )
+//            return true;
+//    }
+//    return false;
+//}
 
 
 int main()
@@ -87,10 +87,10 @@ int main()
     else
         std::cout << "The integers do not form an arithmetic series" << std::endl;
 
-    if(is_geometric_series(integers))
-        std::cout << "The integers form a geometric series" << std::endl;
-    else
-        std::cout << "The integers do not form a geometric series" << std::endl;
+//    if(is_geometric_series(integers))
+//        std::cout << "The integers form a geometric series" << std::endl;
+//    else
+//        std::cout << "The integers do not form a geometric series" << std::endl;
 
     return EXIT_SUCCESS;
 }

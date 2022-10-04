@@ -48,7 +48,7 @@ using namespace std;
 const unsigned int GUESS_MAX = 10; // Not in use, yet
 const unsigned int SUFFIX_LENGTH_IN_PRINT = 5;
 bool input_validated = false;
-std::vector<std::string> retain_colors;
+
 
 // Text printed at the beginning of the program
 const string INFO_TEXT = "Colors in use: \
@@ -58,6 +58,7 @@ B = Blue, R = Red, Y = Yellow, G = Green, O = Orange, V = Violet";
 // Reads the input way, either random or listing way,
 // and fills the color series in the user-desired way.
 // Repeats the question until the user enters either R or L.
+std::vector<std::string> retain_colors;
 void get_input(ColorContainer& sec_series)
 {
     cout << "Enter an input way (R = random, L = list): ";
@@ -126,9 +127,19 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
             if(user_given_series.check_colors())
             {
                 cm= correct_match(sec_series, user_given_series);
+                int sec_pos = tm - cm;
                 if(cm==4)
                 {
                 accepted = true;
+                std::string x = "";
+                std::string user_input= user_given_series.get_series();
+                for (int i=0; i<(int)user_input.size();i++)
+                  {
+                    x += toupper(user_input.at(i));
+                    x += " ";
+                  }
+                retain_colors.push_back("| "+x+"| "+std::to_string(cm)+" | "+std::to_string(sec_pos)+" |");
+                print_all(retain_colors);
                 }
                 else{
                 std::string x = "";

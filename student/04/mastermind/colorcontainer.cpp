@@ -82,7 +82,5 @@ std::string ColorContainer::get_series()
 }
 
 
-ColorContainer::~ColorContainer()
-{
-
-}
+//ColorContainer::~ColorContainer()
+//{}

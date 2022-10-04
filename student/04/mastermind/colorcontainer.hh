@@ -17,7 +17,7 @@ public:
     bool check_colors();
     bool check_length();
     std::string get_series();
-    ~ColorContainer();
+    //~ColorContainer();
 
 
 

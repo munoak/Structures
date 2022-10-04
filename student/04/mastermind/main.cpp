@@ -54,7 +54,6 @@ bool input_validated = false;
 const string INFO_TEXT = "Colors in use: \
 B = Blue, R = Red, Y = Yellow, G = Green, O = Orange, V = Violet";
 
-
 // Reads the input way, either random or listing way,
 // and fills the color series in the user-desired way.
 // Repeats the question until the user enters either R or L.
@@ -127,6 +126,7 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
             if(user_given_series.check_colors())
             {
                 cm= correct_match(sec_series, user_given_series);
+                tm=total_match(sec_series,user_given_series);
                 int sec_pos = tm - cm;
                 if(cm==4)
                 {
@@ -149,7 +149,7 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
                     x += toupper(user_input.at(i));
                     x += " ";
                   }
-                retain_colors.push_back("| "+x+"| "+std::to_string(cm)+" | "+std::to_string(tm)+" |");
+                retain_colors.push_back("| "+x+"| "+std::to_string(cm)+" | "+std::to_string(sec_pos)+" |");
                 print_all(retain_colors);
                 }
             }

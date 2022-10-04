@@ -46,9 +46,9 @@ using namespace std;
 
 
 const unsigned int GUESS_MAX = 10; // Not in use, yet
-//const unsigned int SUFFIX_LENGTH_IN_PRINT = 5;
+const unsigned int SUFFIX_LENGTH_IN_PRINT = 5;
 bool input_validated = false;
-
+std::vector<std::string> retain_colors;
 
 // Text printed at the beginning of the program
 const string INFO_TEXT = "Colors in use: \
@@ -94,8 +94,15 @@ void print_line_with_char(char c, unsigned int line_length)
     }
     cout << endl;
 }
-
-
+void print_all(std::vector<std::string>& retain_colors)
+    {
+        print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
+        for(int i=0; i< (int)retain_colors.size(); i++)
+        {
+            std::cout << retain_colors.at(i) << std::endl;
+        }
+        print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
+    }
 
 
 
@@ -109,7 +116,7 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
     for(uint i=1 ;not accepted && i<=GUESS_MAX; i++ )
     {
 
-    std::vector<std::string> retain_colors;
+
     std::cout << "ROW> ";
     user_given_series.fill_list();
     if (not (user_given_series.get_series() == "q" || user_given_series.get_series() == "Q"))
@@ -132,13 +139,7 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
                     x += " ";
                   }
                 retain_colors.push_back("| "+x+"| "+std::to_string(cm)+" | "+std::to_string(tm)+" |");
-                std::cout<< "==================="<<std::endl;
-                for(int i=0; i< (int)retain_colors.size(); i++)
-
-                {
-                   std::cout << retain_colors.at(i) << std::endl;
-                }
-                std::cout<< "==================="<<std::endl;
+                print_all(retain_colors);
                 }
             }
             else {std::cout << "Unknown color"<< std::endl;}

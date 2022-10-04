@@ -2,41 +2,87 @@
 #include<random>
 #include <iostream>
 
-ColorContainer::ColorContainer()
+
+ColorContainer::ColorContainer(std::string col): entered_colors{col}
 {
 
 }
 
-void ColorContainer::fill_series(int& seed)
+void ColorContainer::fill_series_randomly(int & seed)
 {
-    for (uint i= 0; i < SIZE; i++)
-    {
-        enum color {B =1,R =2 ,Y =3 ,G = 4,O =5,V =6};
-        static std::uniform_int_distribution<int> distr(B, V);
+
+        std::vector<char> color {'b', 'r', 'y', 'g', 'o', 'v'};
+        static std::uniform_int_distribution<int> distr(b, v);
         static std::default_random_engine gen(seed);
-        entered_colors.push_back(distr(gen));
-    }
+        for (uint i= 0; i < SIZE; i++)
+        {
+            int d =distr(gen);
+            entered_colors.push_back(color.at(d));
+        }
+
 }
 
-std::string& ColorContainer::fill_list()
+void ColorContainer::fill_list()
 {
-    std::cout << "Enter four colors (four letters without spaces): ";
     std::cin >> entered_colors;
-    return entered_colors;
+}
+
+bool ColorContainer::fill_series_manually()
+{
+    bool accepted = false;
+    while(not accepted)
+    {
+    std::cout << "Enter four colors (four letters without spaces): ";
+    fill_list();
+    if(not check_length())
+        {
+            std::cout << "Wrong size"<< std::endl;
+        }
+    else
+        {
+             if(not check_colors())
+                {
+                    std::cout << "Unknown color"<< std::endl;
+                }
+             else
+             {
+                 accepted = true;
+             }
+        }
+
+    }
+    return true;
 }
 bool ColorContainer::check_colors(){
     std::string given_colors = "brygov";
-        //for (char& c : entered_colors) {
+    int i=0;
+        for (char c : entered_colors)
+        {
 
-            if (given_colors.find(entered_colors) != std::string::npos)
+            for(char d: given_colors)
             {
-                return true;
+            if(c==d)
+                 i++;
             }
-        //}
-        return false;
+
+        }
+        return i==SIZE;
+
 }
 
 bool ColorContainer::check_length()
 {
     return (entered_colors.length() == SIZE);
+}
+
+
+std::string ColorContainer::get_series()
+{
+    return entered_colors;
+}
+
+
+ColorContainer::~ColorContainer()
+{
+
 }

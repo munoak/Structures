@@ -41,13 +41,13 @@ int main()
 
     std::vector< std::string > parts  = split(line, separator);
     std::cout << "Splitted string including empty parts: " << std::endl;
-    for( auto part :parts ) {
+    for( auto part : parts ) {
         std::cout << part << std::endl;
     }
 
     std::vector< std::string > parts_no_empty  = split(line, separator, true);
     std::cout << "Splitted string ignoring empty parts: " << std::endl;
-    for( auto parto : parts_no_empty ) {
-        std::cout << parto << std::endl;
+    for( auto part : parts_no_empty ) {
+        std::cout << part << std::endl;
     }
 }

@@ -118,7 +118,6 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
     bool accepted = false;
     int cm {};
     int tm {};
-    int flag = 0;
 
     for(uint i=1 ;not accepted && i<=GUESS_MAX; i++ )
     {
@@ -127,8 +126,7 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
         user_given_series.fill_list();
         if (user_given_series.get_series() == "q" || user_given_series.get_series() == "Q")
         {
-            flag = 1;
-            break;
+            exit(0);
         }
         if(user_given_series.check_length())
         {
@@ -166,14 +164,13 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
         }
         else {std::cout << "Wrong size"<< std::endl;}
     }
-    while(!flag){
     if (accepted)
       {
         std::cout << "You won: Congratulations!"<<std::endl;
       }
     else{
         std::cout << "You lost: Maximum number of guesses done"<<std::endl;}
-    }
+
 }
 
 int total_matches(ColorContainer sec_series, ColorContainer user_given_series)

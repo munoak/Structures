@@ -156,19 +156,20 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
             else {std::cout << "Unknown color"<< std::endl;}
         }
      else {std::cout << "Wrong size"<< std::endl;}
-
+        if (accepted)
+          {
+            std::cout << "You won: Congratulations!"<<std::endl;
+          }
+        else
+            std::cout << "You lost: Maximum number of guesses done"<<std::endl;
     }
+
     else
     {
-        abort();
+        break;
     }
     }
-    if (accepted)
-      {
-        std::cout << "You won: Congratulations!"<<std::endl;
-      }
-    else
-        std::cout << "You lost: Maximum number of guesses done"<<std::endl;
+
 }
 
 int total_match(ColorContainer sec_series, ColorContainer user_given_series)

@@ -24,11 +24,14 @@
  *
  * Program author
  * Name: Noman Akbar
- * NAME: Talha Mansoor
  * Student number: 150596134
  * UserID: mknoak
  * E-Mail: noman.akbar@tuni.fi
- *
+ * Student 2.
+ * NAME: Talha Mansoor
+ * Student number: 150595685
+ * UserID: vxtama
+ * E-Mail: talha.mansoor@tuni.fi
  * Notes about the program and it's implementation:
  *
  * */

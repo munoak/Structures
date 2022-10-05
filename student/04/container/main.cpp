@@ -19,9 +19,9 @@ void read_integers(std::vector< int >& ints, int count)
 
 bool same_values(std::vector< int >& ints)
 {
-    for (auto i: ints)
+    for (uint i=0 ; i < ints.size() + 1; i++)
     {
-        if(ints.at(0) == i+1)
+        if(ints.at(0) == ints.at(i+1))
             return true;
     }
     return false;

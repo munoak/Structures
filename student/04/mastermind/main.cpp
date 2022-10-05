@@ -24,6 +24,7 @@
  *
  * Program author
  * Name: Noman Akbar
+ * NAME: Talha Mansoor
  * Student number: 150596134
  * UserID: mknoak
  * E-Mail: noman.akbar@tuni.fi
@@ -31,21 +32,25 @@
  * Notes about the program and it's implementation:
  *
  * */
-// TODO: Include your header file of the class describing a series of four colors
+//Header files of the class describing a series of four colors
 #include "colorcontainer.hh"
 #include <iostream>
 #include <vector>
 #include <random>
 #include <string>
 
-int total_match(ColorContainer, ColorContainer);
-int correct_match(ColorContainer, ColorContainer);
-
+//Function Prototypes
+void get_input(ColorContainer&);
+int total_matches(ColorContainer, ColorContainer);
+int correct_matches(ColorContainer, ColorContainer);
+void print_line_with_char(char, unsigned int);
+void print_all(std::vector<std::string>&);
+void start_game(ColorContainer, ColorContainer);
 
 using namespace std;
 
-
-const unsigned int GUESS_MAX = 10; // Not in use, yet
+//Constants
+const unsigned int GUESS_MAX = 10;
 const unsigned int SUFFIX_LENGTH_IN_PRINT = 5;
 bool input_validated = false;
 
@@ -73,7 +78,7 @@ void get_input(ColorContainer& sec_series)
     }
     else if(input_str == "L" or input_str == "l")
     {
-        if(sec_series.fill_series_manually())
+        if(sec_series.fill_series_manually())  // Fills color series and check weather input is valid
             {
                input_validated = true;
             }
@@ -113,20 +118,24 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
     bool accepted = false;
     int cm {};
     int tm {};
+    int flag = 0;
+
     for(uint i=1 ;not accepted && i<=GUESS_MAX; i++ )
     {
 
-
-    std::cout << "ROW> ";
-    user_given_series.fill_list();
-    if (not (user_given_series.get_series() == "q" || user_given_series.get_series() == "Q"))
-     {
+        std::cout << "ROW> ";
+        user_given_series.fill_list();
+        if (user_given_series.get_series() == "q" || user_given_series.get_series() == "Q")
+        {
+            flag = 1;
+            break;
+        }
         if(user_given_series.check_length())
         {
             if(user_given_series.check_colors())
             {
-                cm= correct_match(sec_series, user_given_series);
-                tm=total_match(sec_series,user_given_series);
+                cm= correct_matches(sec_series, user_given_series);
+                tm=total_matches(sec_series,user_given_series);
                 int sec_pos = tm - cm;
                 if(cm==4)
                 {
@@ -155,24 +164,19 @@ void start_game(ColorContainer sec_series, ColorContainer user_given_series){
             }
             else {std::cout << "Unknown color"<< std::endl;}
         }
-     else {std::cout << "Wrong size"<< std::endl;}
-        if (accepted)
-          {
-            std::cout << "You won: Congratulations!"<<std::endl;
-          }
-        else
-            std::cout << "You lost: Maximum number of guesses done"<<std::endl;
+        else {std::cout << "Wrong size"<< std::endl;}
     }
-
-    else
-    {
-        break;
+    while(!flag){
+    if (accepted)
+      {
+        std::cout << "You won: Congratulations!"<<std::endl;
+      }
+    else{
+        std::cout << "You lost: Maximum number of guesses done"<<std::endl;}
     }
-    }
-
 }
 
-int total_match(ColorContainer sec_series, ColorContainer user_given_series)
+int total_matches(ColorContainer sec_series, ColorContainer user_given_series)
 {
     int tm = 0;
     std::string game_clr = user_given_series.get_series();
@@ -183,7 +187,7 @@ int total_match(ColorContainer sec_series, ColorContainer user_given_series)
           {
             if(game_clr.at(i) == ref_clr.at(j))
               {
-                ref_clr[j]='x';
+                ref_clr[j]='z';
                 tm++;
                 break;
               }
@@ -192,13 +196,13 @@ int total_match(ColorContainer sec_series, ColorContainer user_given_series)
 
     return tm;
 }
-int correct_match(ColorContainer sec_series, ColorContainer user_given_series)
+int correct_matches(ColorContainer sec_series, ColorContainer user_given_series)
 {
     int cm = 0;
-    std::string a= sec_series.get_series();
-    std::string b= user_given_series.get_series();
+    std::string sec= sec_series.get_series();
+    std::string usr= user_given_series.get_series();
     for(int i=0; i < 4 ; i++){
-       if(a.at(i) == b.at(i)){
+       if(sec.at(i) == usr.at(i)){
                 cm++;
                 }
         }
@@ -209,10 +213,12 @@ int main()
 {
     cout << INFO_TEXT << endl;
     print_line_with_char('*', INFO_TEXT.size());
-
+    //Object 1 "sec_series" which contains information of sec series
+    //It get it's value by "get_input" function
     ColorContainer sec_series {"rrrr"};
-    //sec_series.set_sec_series()
     get_input(sec_series);
+    //This Object is made for playing game
+    //Takes values from user and compare it with secret series
     ColorContainer user_given_series {"oooo"};
     if(input_validated){
             start_game(sec_series, user_given_series);

@@ -28,7 +28,7 @@ int main()
                 while (!f1_object.eof()) {
                     ++line_num;
                     getline(f1_object, ch);
-                    f2_object  << line_num << " "<< ch;
+                    f2_object  << line_num << " "<< ch << endl;
 
                 }
             }

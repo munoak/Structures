@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-            string ch;
+
             string f1;
             cout << "Input file: ";
             getline(cin, f1);
@@ -25,9 +25,10 @@ int main()
             }
          else {
                 int line_num = 0;
-                while (!f1_object.eof()) {
+                string ch;
+                while (getline(f1_object, ch)) {
                     ++line_num;
-                    getline(f1_object, ch);
+                    //getline(f1_object, ch);
                     f2_object  << line_num << " "<< ch << endl;
 
                 }

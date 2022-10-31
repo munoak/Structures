@@ -27,14 +27,14 @@
 #include <algorithm>
 #include <iterator>
 #include <set>
-#include <map>
 #include <tuple>
+
 
 // Farthest year for which gigs can be allocated
 const std::string FARTHEST_POSSIBLE_YEAR = "2030";
 
 // Casual split func, if delim char is between "'s, ignores it.
-std::vector<std::string> split(const std::string& str, char delim)
+std::vector<std::string> split(const std::string& str, char delim =';')
 {
     std::vector<std::string> result = {""};
     bool inside_quotation = false;
@@ -100,24 +100,24 @@ bool is_valid_date(const std::string& date_str)
     }
 }
 
-//bool isFormatValid(std::ifstream & file_obj)
-//{
-//    std::string line;
-//    while (getline(file_obj, line)) {
-//        int count = 0;
-//        for(uint i=0; i<line.size();i++)
-//        {
-//            if(line[0] == ';')
-//                return false;
-//            if(line[i] == ';')
-//                count++;
-//        }
-//        if(count!= 3)
-//            return false;
-//    }
-//    file_obj.close();
-//    return true;
-//}
+bool isFormatValid(std::ifstream & file_obj)
+{
+    std::string line;
+    while (getline(file_obj, line)) {
+        int count = 0;
+        for(uint i=0; i<line.size();i++)
+        {
+            if(line[i] == ';' && line[i+1]==';')
+                return false;
+            if(line[i] == ';')
+                count++;
+        }
+        if(count!= 3)
+            return false;
+    }
+    file_obj.close();
+    return true;
+}
 
 struct Gig{
     std::string artist,
@@ -127,9 +127,10 @@ struct Gig{
     bool operator< (const Gig& other) const
     {
         return std::tie(artist, date, city, stage)
-             < std::tie(other.artist, other.date, other.city, other.stage);
+                < std::tie(other.artist, other.date, other.city, other.stage);
     }
 };
+
 
 void readDataFromFile(std::ifstream & file_obj, std::vector<Gig>& data)
 {
@@ -157,12 +158,26 @@ void printGig(Gig const &gig)
                              << gig.stage << std::endl;
 }
 
-void print_artist(std::set<Gig>& gig_data)
+std::set <std::string> artistsName (std::ifstream & file_obj)
 {
-    std::cout << "All artists in alphabetical order:";
+    std::set <std::string> artistsData;
+    std::string line;
+    std::vector <std::string> artistsItems;
+  //  char delim = ';';
+    while(getline(file_obj, line))
+    {
+        artistsItems = split(line);
+        artistsData.insert(artistsItems.at(0));
+    }
+    return artistsData;
+}
+
+void print_artist(std::set<std::string> & gig_data)
+{
+    std::cout << "All artists in alphabetical order:" <<std::endl;
     for(auto& a: gig_data)
     {
-        std::cout << a.artist << std::endl;
+        std::cout << a << std::endl;
     }
 
 }
@@ -186,20 +201,27 @@ int main()
 {
     std::vector<Gig> gig_data;
     std::set<Gig> finalData;
+    std::set<std::string> artistsData;
     std::string file_name = "";
     std::cout << "Give a name for input file: ";
     getline(std::cin, file_name);
     std::ifstream file_obj(file_name);
-    if (!file_obj)                          //Checking either file is opening or not.
+    //Checking either file is opening or not.
+    if (!file_obj)
     {
         std::cout << "Error: File could not be read." << std::endl;
         return EXIT_FAILURE;
     }
-    //    if(!isFormatValid(file_obj))             //Checking either file has correct format
-    //    {
-    //        std::cout << "Error: Invalid format in file." << std::endl;
-    //    }
-    readDataFromFile(file_obj, gig_data);
+    //Checking either file has correct format
+    if(!isFormatValid(file_obj))
+    {
+
+        std::cout << "Error: Invalid format in file." << std::endl;
+    }
+    std::ifstream file_objt(file_name);
+    readDataFromFile(file_objt, gig_data);
+    //std::ifstream file_object(file_name);
+    artistsData= artistsName(file_objt);
     finalData= convertToSet(gig_data);
     //printGig(gig_data.at(0));
 
@@ -211,10 +233,10 @@ int main()
         for (auto & c: command)
         {
             c = toupper(c);
-         }
+        }
         if (command == "ARTISTS")
         {
-            print_artist(finalData);
+            print_artist(artistsData);
         }
     }
 

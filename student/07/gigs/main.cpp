@@ -100,6 +100,26 @@ bool is_valid_date(const std::string& date_str)
     }
 }
 
+
+bool checkingDate (std::ifstream &file_name)
+{
+    std::set <std::string> dateData;
+    std::string line;
+    std::vector <std::string> dataItems;
+    char delim = ';';
+    while(getline(file_name, line))
+    {
+        dataItems = split (line, delim);
+        if (!is_valid_date(line))
+        {
+            return false;
+        }
+        dateData.insert(dataItems.at(1));
+    }
+    file_name.close();
+    return true;
+}
+
 bool isFormatValid(std::ifstream & file_obj)
 {
     std::string line;
@@ -172,25 +192,6 @@ std::set <std::string> artistsName (std::ifstream & file_obj)
     return artistsData;
 }
 
-//std::set <std::string> stageData (std::ifstream & file_obj)
-//{
-//    map<stdstring, set<int>> words;
-//    string line;
-//    vector<string> line_words;
-//    vector<string>::iterator words_itr;
-
-//    std::set <std::string> stagesData;
-//    std::string line;
-//    std::vector <std::string> stageItems;
-//    char delim = ';';
-//    while(getline(file_obj, line))
-//    {
-//        stageItems = split(line, delim);
-//        stagesData.insert(stageItems.at(2));
-//        stagesData.insert(stageItems.at(3));
-//    }
-//    return stagesData;
-//}
 void print_artist(std::set<std::string> & gig_data)
 {
     std::cout << "All artists in alphabetical order:" <<std::endl;
@@ -212,15 +213,15 @@ void print_stages(std::set<Gig> & gig_data)
 void printArtistgigs(std::string artistname, std::set<Gig> & gig_data)
 {
     std::cout <<
-    "Artist Elastinen has the following gigs in the order they are listed:"
+                 "Artist Elastinen has the following gigs in the order they are listed:"
     << std::endl;
     for(auto & b: gig_data)
     {
         if(b.artist == artistname)
-        std::cout << " - " << b.date
-                  <<" : " << b.city
-                  <<", "  << b.stage
-                  << std::endl;
+            std::cout << " - " << b.date
+                      <<" : " << b.city
+                     <<", "  << b.stage
+                    << std::endl;
     }
 }
 std::set<Gig> convertToSet(std::vector<Gig> gig_vector)
@@ -242,12 +243,12 @@ std::set<Gig> convertToSet(std::vector<Gig> gig_vector)
 std::string artistpresent(std::vector<std::string> & commandParts,
                           std::set<std::string> & artistData)
 {
-//    std::string secpos = commandParts.at(1);
-//    secpos.erase(remove(secpos.begin(), secpos.end(), '"'));
+    std::string secpos = commandParts.at(1);
+    secpos.erase(remove(secpos.begin(), secpos.end(), '"'), secpos.end());
     std::string artistname;
     for(auto & artist_i : artistData)
     {
-        if(commandParts.at(1) == artist_i)
+        if(secpos == artist_i)
             artistname = artist_i;
     }
     return artistname;
@@ -289,6 +290,14 @@ void checkCommand(std::string & command, std::set<Gig> gig_data,
     }
 
     else std::cout << "Error: Not found." << std::endl;
+    if(commandParts.size()== 3 && (commandParts.at(0) == "ARTSIST" ||
+       commandParts.at(0) == "STAGE"))
+    {
+        std::string secpos = commandParts.at(1);
+        std::string trdpos = commandParts.at(2);
+
+        secpos.erase(remove(secpos.begin(), secpos.end(), '"'), secpos.end());
+    }
 
     //    if(commandParts.size() == 2)
     //    {
@@ -320,6 +329,12 @@ int main()
     if(!isFormatValid(file_obj))
     {
         std::cout << "Error: Invalid format in file." << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::ifstream fileo(file_name);
+    if (not checkingDate(fileo))
+    {
+        std::cout << "Error: Invalid date."<< std::endl;
         return EXIT_FAILURE;
     }
     std::ifstream file_objt(file_name);

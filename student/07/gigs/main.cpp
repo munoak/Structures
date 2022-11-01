@@ -34,7 +34,7 @@
 const std::string FARTHEST_POSSIBLE_YEAR = "2030";
 
 // Casual split func, if delim char is between "'s, ignores it.
-std::vector<std::string> split(const std::string& str, char delim =';')
+std::vector<std::string> split(const std::string& str, char delim)
 {
     std::vector<std::string> result = {""};
     bool inside_quotation = false;
@@ -163,15 +163,34 @@ std::set <std::string> artistsName (std::ifstream & file_obj)
     std::set <std::string> artistsData;
     std::string line;
     std::vector <std::string> artistsItems;
-  //  char delim = ';';
+    char delim = ';';
     while(getline(file_obj, line))
     {
-        artistsItems = split(line);
+        artistsItems = split(line, delim);
         artistsData.insert(artistsItems.at(0));
     }
     return artistsData;
 }
 
+//std::set <std::string> stageData (std::ifstream & file_obj)
+//{
+//    map<stdstring, set<int>> words;
+//    string line;
+//    vector<string> line_words;
+//    vector<string>::iterator words_itr;
+
+//    std::set <std::string> stagesData;
+//    std::string line;
+//    std::vector <std::string> stageItems;
+//    char delim = ';';
+//    while(getline(file_obj, line))
+//    {
+//        stageItems = split(line, delim);
+//        stagesData.insert(stageItems.at(2));
+//        stagesData.insert(stageItems.at(3));
+//    }
+//    return stagesData;
+//}
 void print_artist(std::set<std::string> & gig_data)
 {
     std::cout << "All artists in alphabetical order:" <<std::endl;
@@ -180,6 +199,29 @@ void print_artist(std::set<std::string> & gig_data)
         std::cout << a << std::endl;
     }
 
+}
+void print_stages(std::set<Gig> & gig_data)
+{
+    std::cout << "All gig places in alphabetical order:" <<std::endl;
+    for(auto & b: gig_data)
+    {
+        std::cout << b.city << ", " << b.stage << std::endl;
+    }
+
+}
+void printArtistgigs(std::string artistname, std::set<Gig> & gig_data)
+{
+    std::cout <<
+    "Artist Elastinen has the following gigs in the order they are listed:"
+    << std::endl;
+    for(auto & b: gig_data)
+    {
+        if(b.artist == artistname)
+        std::cout << " - " << b.date
+                  <<" : " << b.city
+                  <<", "  << b.stage
+                  << std::endl;
+    }
 }
 std::set<Gig> convertToSet(std::vector<Gig> gig_vector)
 {
@@ -197,11 +239,73 @@ std::set<Gig> convertToSet(std::vector<Gig> gig_vector)
     // Return the resultant Set
     return Gig_set;
 }
+std::string artistpresent(std::vector<std::string> & commandParts,
+                          std::set<std::string> & artistData)
+{
+//    std::string secpos = commandParts.at(1);
+//    secpos.erase(remove(secpos.begin(), secpos.end(), '"'));
+    std::string artistname;
+    for(auto & artist_i : artistData)
+    {
+        if(commandParts.at(1) == artist_i)
+            artistname = artist_i;
+    }
+    return artistname;
+}
+void checkCommand(std::string & command, std::set<Gig> gig_data,
+                  std::set<std::string> artistsData)
+{
+
+    std::vector<std::string> commandParts;
+    char delim = ' ';
+    commandParts = split(command, delim);
+    if(commandParts.size() < 1)
+    {
+        std::cout << "Error: Invalid input." << std::endl;
+    }
+    if(commandParts.size() == 1)
+    {
+        if(commandParts.at(0) != "ARTISTS" && commandParts.at(0) != "STAGES" )
+        {
+            std::cout << "Error: Invalid input." << std::endl;
+        }
+    }
+    if (commandParts.size()== 1 && commandParts.at(0) == "ARTISTS")
+    {
+        print_artist(artistsData);
+    }
+    if (commandParts.size()== 1 && commandParts.at(0) == "STAGES")
+    {
+        print_stages(gig_data);
+    }
+    if(commandParts.size() == 2)
+    {
+        std::string artistname= artistpresent(commandParts, artistsData);
+        if(commandParts.at(0) == "ARTIST"
+                && commandParts.at(1) == artistname )
+        {
+            printArtistgigs(artistname, gig_data);
+        }
+    }
+
+    else std::cout << "Error: Not found." << std::endl;
+
+    //    if(commandParts.size() == 2)
+    //    {
+    //        if(commandParts.at(0) == "STAGE" && commandParts.at(1) !=  gig2.stage)
+    //        {
+    //            std::cout << "Error: Not found." << std::endl;
+    //        }
+    //    }
+
+    commandParts.clear();
+}
 int main()
 {
     std::vector<Gig> gig_data;
     std::set<Gig> finalData;
     std::set<std::string> artistsData;
+    std::set<std::string> stagesData;
     std::string file_name = "";
     std::cout << "Give a name for input file: ";
     getline(std::cin, file_name);
@@ -215,29 +319,31 @@ int main()
     //Checking either file has correct format
     if(!isFormatValid(file_obj))
     {
-
         std::cout << "Error: Invalid format in file." << std::endl;
+        return EXIT_FAILURE;
     }
     std::ifstream file_objt(file_name);
     readDataFromFile(file_objt, gig_data);
-    //std::ifstream file_object(file_name);
-    artistsData= artistsName(file_objt);
+    std::ifstream file_object(file_name);
+    artistsData= artistsName(file_object);
+    std::ifstream file_objectt(file_name);
+    //stagesData= stageData(file_objectt);
     finalData= convertToSet(gig_data);
     //printGig(gig_data.at(0));
+
 
     std::string command;
     while (command != "QUIT")
     {
         std::cout << "gigs> ";
         getline(std::cin, command);
-        for (auto & c: command)
-        {
-            c = toupper(c);
-        }
-        if (command == "ARTISTS")
-        {
-            print_artist(artistsData);
-        }
+        //        for (auto & c: command)
+        //        {
+        //            c = toupper(c);
+        //        }
+        checkCommand(command, finalData, artistsData);
+
+
     }
 
     return EXIT_SUCCESS;

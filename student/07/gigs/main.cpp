@@ -360,59 +360,15 @@ void checkCommand(std::string & command,
         if(commandParts.at(0) == "ARTIST" && commandParts.at(1) != artistname)
             std::cout << "Error: Not found." << std::endl;
         std::string stageName= stagePresent(commandParts, finalData);
-        if(commandParts.at(0) == "STAGE"
+        if((commandParts.at(0) == "STAGE" || commandParts.at(0) == "stage")
                 && commandParts.at(1) == stageName )
         {
             printStagegigs(stageName, finalData);
         }
-        if(commandParts.at(0) == "STAGE" && commandParts.at(1) != stageName)
+        if((commandParts.at(0) == "STAGE" || commandParts.at(0) == "stage")
+           && commandParts.at(1) != stageName)
             std::cout << "Error: Not found." << std::endl;
     }
-
-    if(commandParts.size()== 3)
-    {
-        if(commandParts.at(0) == "ARTSIST")
-        {
-            std::string secpos = commandParts.at(1);
-            std::string trdpos = commandParts.at(2);
-            secpos.erase(remove(secpos.begin(), secpos.end(), '"'), secpos.end());
-            trdpos.erase(remove(trdpos.begin(), trdpos.end(), '"'), trdpos.end());
-            std::string combinedst = secpos.append(trdpos);
-            std::string artistname;
-            for(auto & artist_i : gig_data)
-            {
-                if(combinedst == artist_i.artist)
-                    artistname = combinedst;
-            }
-
-            if(commandParts.at(0) == "ARTIST"
-                    && commandParts.at(1) == artistname )
-            {
-                printArtistgigs(artistname, finalData);
-            }
-        }
-        if(commandParts.at(0) == "stage")
-        {
-            std::string secpos = commandParts.at(1);
-            std::string trdpos = commandParts.at(2);
-            secpos.erase(remove(secpos.begin(), secpos.end(), '"'), secpos.end());
-            trdpos.erase(remove(trdpos.begin(), trdpos.end(), '"'), trdpos.end());
-            std::string combinedst = secpos.append(trdpos);
-            std::string stageNeme;
-            for(auto & artist_i : gig_data)
-            {
-                if(combinedst == artist_i.stage)
-                    stageNeme = combinedst;
-            }
-
-            if(commandParts.at(0) == "ARTIST"
-                    && commandParts.at(1) == stageNeme )
-            {
-                printStagegigs(stageNeme, finalData);
-            }
-        }
-    }
-
     commandParts.clear();
 }
 

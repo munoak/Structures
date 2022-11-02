@@ -297,7 +297,7 @@ bool checkPlans(std::vector<std::string> artistPlans,std::string artistGigs )
     return false;
 }
 
-
+//If an artist has several gigs at the same time
 bool checkBookings (std::vector <Gig> &gig_data)
 {
     std::map<std::string, std::vector<std::string>> artistGigs;
@@ -313,6 +313,25 @@ bool checkBookings (std::vector <Gig> &gig_data)
         artistGigs.clear();
         artistGigs.insert({gig_data.at(i).artist,artistGigsList});
     }
+    return true;
+}
+//If a stage has several gigs at the same time
+bool stageBookings (std::vector <Gig> &gig_data)
+{
+    std::map<std::string, std::vector<std::string>> artistGigs;
+    for(uint i=0; i < gig_data.size() ; i++){
+        std::vector<std::string> artistGigsList;
+        if(artistGigs.count(gig_data.at(i).stage)){
+
+            artistGigsList = artistGigs.at(gig_data.at(i).stage);
+            if(checkPlans(artistGigsList,gig_data.at(i).date))
+                return false;
+        }
+        artistGigsList.push_back(gig_data.at(i).date);
+        artistGigs.clear();
+        artistGigs.insert({gig_data.at(i).stage,artistGigsList});
+    }
+
     return true;
 }
 
@@ -411,7 +430,11 @@ int main()
         std::cout << "Error: Already exists." << std::endl;
         return EXIT_FAILURE;
     }
-
+    if(!stageBookings(gig_data))
+    {
+        std::cout << "Error: Already exists." << std::endl;
+        return EXIT_FAILURE;
+    }
     //Starts taking commands and permorms the execution accordingly
     std::string command;
     while (command != "QUIT" || command != "quit")

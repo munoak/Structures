@@ -1,4 +1,4 @@
-Happoradio;06-04-2022;Riihimäki;Riutanharju
+Happoradio;202-06-04;Riihimäki;Riutanharju
 Happoradio;2022-06-10;Lappeenranta;Kulttuuritila Nuijamies
 Happoradio;2022-07-08;Tampere;Satamaravintola Kaisla
 Elastinen;2022-05-20;Riihimäki;Riutanharju

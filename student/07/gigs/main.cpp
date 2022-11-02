@@ -39,8 +39,20 @@
 #include <algorithm>
 #include <iterator>
 #include <set>
+#include <map>
 #include <tuple>
 
+struct Gig{
+    std::string artist,
+    date,
+    city,
+    stage;
+    bool operator< (const Gig& other) const
+    {
+        return std::tie(artist, date, city, stage)
+                < std::tie(other.artist, other.date, other.city, other.stage);
+    }
+};
 
 // Farthest year for which gigs can be allocated
 const std::string FARTHEST_POSSIBLE_YEAR = "2030";
@@ -112,9 +124,6 @@ bool is_valid_date(const std::string& date_str)
     }
 }
 
-
-
-
 bool isFormatValid(std::ifstream & file_obj)
 {
     std::string line;
@@ -134,17 +143,6 @@ bool isFormatValid(std::ifstream & file_obj)
     return true;
 }
 
-struct Gig{
-    std::string artist,
-    date,
-    city,
-    stage;
-    bool operator< (const Gig& other) const
-    {
-        return std::tie(artist, date, city, stage)
-                < std::tie(other.artist, other.date, other.city, other.stage);
-    }
-};
 
 
 void readDataFromFile(std::ifstream & file_obj, std::vector<Gig>& data)
@@ -168,55 +166,43 @@ void readDataFromFile(std::ifstream & file_obj, std::vector<Gig>& data)
 bool checkingDate (std::set<Gig> & gig_data)
 {
     std::string dateData;
-    for(auto & date_i : gig_data)
-    {
 
-        std::cout << date_i.date << std::endl;
-        //        if(!is_valid_date(dateData))
-        //            return false;
+    for(auto & a : gig_data)
+    {
+        dateData = a.date;
+        if(!is_valid_date(dateData))
+        {
+            return false;
+        }
     }
     return true;
 }
-void printGig(Gig const &gig)
-{
-    std::cout << "Artists: " << gig.artist << "date: "
-                             << gig.date << "city: "
-                             << gig.city << "stage: "
-                             << gig.stage << std::endl;
-}
 
-std::set <std::string> artistsName (std::ifstream & file_obj)
+void print_artist(std::vector<Gig> & gig_data)
 {
-    std::set <std::string> artistsData;
-    std::string line;
-    std::vector <std::string> artistsItems;
-    char delim = ';';
-    while(getline(file_obj, line))
-    {
-        artistsItems = split(line, delim);
-        artistsData.insert(artistsItems.at(0));
-    }
-    return artistsData;
-}
-
-void print_artist(std::set<std::string> & gig_data)
-{
+    std::set <std::string> gig;
     std::cout << "All artists in alphabetical order:" <<std::endl;
-    for(auto& a: gig_data)
+    for (uint i=0; i<gig_data.size();i++)
     {
-        std::cout << a << std::endl;
+        gig.insert(gig_data.at(i).artist);
     }
-
+    for (auto & itr : gig)
+    {
+        std::cout << itr << std::endl;
+    }
 }
 void print_stages(std::vector<Gig> & gig_data)
 {
     std::cout << "All gig places in alphabetical order:" <<std::endl;
-    //std::sort(gig_data.begin()->stage, gig_data.end()->stage, true);
-    for(auto & b: gig_data)
+    std::map<std::string,std::string> gig;
+    for (uint i=0; i<gig_data.size();i++)
     {
-        std::cout << b.city << ", " << b.stage << std::endl;
+        gig.insert({gig_data.at(i).city, gig_data.at(i).stage});
     }
-
+    for (auto &itr : gig)
+    {
+        std::cout << itr.first << ", " << itr.second <<std::endl;
+    }
 }
 void printArtistgigs(std::string artistname, std::set<Gig> & gig_data)
 {
@@ -233,16 +219,25 @@ void printArtistgigs(std::string artistname, std::set<Gig> & gig_data)
                     << std::endl;
     }
 }
+
+void printStagegigs(std::string stageName, std::set<Gig> & gig_data)
+{
+    std::cout << "Stage "
+              << stageName
+              << " has gigs of the following artists:"
+              << std::endl;
+    for(auto & stageGig: gig_data)
+    {
+        if(stageName == stageGig.stage)
+            std::cout << " - " << stageGig.artist
+                      << std::endl;
+    }
+}
 std::set<Gig> convertToSet(std::vector<Gig> gig_vector)
 {
     // Declaring the set
     std::set<Gig> Gig_set;
-
-    // Traverse the Vector
     for (auto & x : gig_vector) {
-
-        // Insert each element
-        // into the Set
         Gig_set.insert(x);
     }
     gig_vector.assign( Gig_set.begin(), Gig_set.end() );
@@ -250,21 +245,65 @@ std::set<Gig> convertToSet(std::vector<Gig> gig_vector)
     return Gig_set;
 }
 std::string artistpresent(std::vector<std::string> & commandParts,
-                          std::set<std::string> & artistData)
+                          std::set<Gig> & artistData)
 {
     std::string secpos = commandParts.at(1);
     secpos.erase(remove(secpos.begin(), secpos.end(), '"'), secpos.end());
     std::string artistname;
     for(auto & artist_i : artistData)
     {
-        if(secpos == artist_i)
-            artistname = artist_i;
+        if(secpos == artist_i.artist)
+            artistname = secpos;
     }
     return artistname;
 }
-void checkCommand(std::string & command, std::vector<Gig> finalData,
-                  std::set<Gig> gig_data,
-                  std::set<std::string> artistsData)
+std::string stagePresent(std::vector<std::string> & commandParts,
+                         std::set<Gig> & finalData)
+{
+    std::string command = commandParts.at(1);
+    std::string stageName;
+    for(auto & artist_i : finalData)
+    {
+        if(command == artist_i.stage)
+            stageName = command;
+
+    }
+    return stageName;
+}
+bool check_sched(std::vector<std::string> schedList,std::string artistGigs )
+{
+    for(uint i=0;i<schedList.size();i++)
+    {
+        if (schedList.at(i)==artistGigs)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool checkBookings (std::vector <Gig> &gig_data)
+{
+    std::map<std::string, std::vector<std::string>> artistGigs;
+    for(uint i=0; i < gig_data.size() ; i++){
+        std::vector<std::string> List;
+        if(artistGigs.count(gig_data.at(i).artist)){
+
+            List = artistGigs.at(gig_data.at(i).artist);
+            if(check_sched(List,gig_data.at(i).date))
+                return false;
+        }
+        List.push_back(gig_data.at(i).date);
+        artistGigs.clear();
+        artistGigs.insert({gig_data.at(i).artist,List});
+    }
+    return true;
+}
+
+void checkCommand(std::string & command,
+                  std::vector<Gig> gig_data,
+                  std::set<Gig> finalData)
 {
 
     std::vector<std::string> commandParts;
@@ -276,39 +315,45 @@ void checkCommand(std::string & command, std::vector<Gig> finalData,
     }
     if(commandParts.size() == 1)
     {
-        //        if(commandParts.at(0) != "ARTISTS" && commandParts.at(0) != "STAGES"
-        //        && commandParts.at(0) != "QUIT")
-        //        {
-        //
-        //        }
-
         if (commandParts.at(0) == "ARTISTS")
         {
-            print_artist(artistsData);
+            print_artist(gig_data);
         }
         if (commandParts.at(0) == "STAGES")
         {
-            print_stages(finalData);
+            print_stages(gig_data);
         }
         if (commandParts.at(0) == "QUIT")
         {
             exit(0);
         }
-        else std::cout << "Error: Invalid input." << std::endl;
+        if(commandParts.at(0) != "ARTISTS" &&
+                commandParts.at(0) != "STAGES" && commandParts.at(0) != "QUIT")
+        {
+            std::cout << "Error: Invalid input." << std::endl;
+        }
     }
     if(commandParts.size() == 2)
     {
-        std::string artistname= artistpresent(commandParts, artistsData);
+        std::string artistname= artistpresent(commandParts, finalData);
         if(commandParts.at(0) == "ARTIST"
                 && commandParts.at(1) == artistname )
         {
-            printArtistgigs(artistname, gig_data);
+            printArtistgigs(artistname, finalData);
         }
-        else std::cout << "Error: Not found." << std::endl;
+        if(commandParts.at(0) == "ARTIST" && commandParts.at(1) != artistname)
+            std::cout << "Error: Not found." << std::endl;
+        std::string stageName= stagePresent(commandParts, finalData);
+        if(commandParts.at(0) == "STAGE"
+                && commandParts.at(1) == stageName )
+        {
+            printStagegigs(stageName, finalData);
+        }
+        if(commandParts.at(0) == "STAGE" && commandParts.at(1) != stageName)
+            std::cout << "Error: Not found." << std::endl;
     }
 
-    if(commandParts.size()== 3 && (commandParts.at(0) == "ARTSIST" ||
-                                   commandParts.at(0) == "STAGE"))
+    if(commandParts.size()== 3 && commandParts.at(0) == "ARTSIST")
     {
         std::string secpos = commandParts.at(1);
         std::string trdpos = commandParts.at(2);
@@ -316,29 +361,30 @@ void checkCommand(std::string & command, std::vector<Gig> finalData,
         trdpos.erase(remove(trdpos.begin(), trdpos.end(), '"'), trdpos.end());
         std::string combinedst = secpos.append(trdpos);
         std::string artistname;
-        for(auto & artist_i : artistsData)
+        for(auto & artist_i : gig_data)
         {
-            if(combinedst == artist_i)
-                artistname = artist_i;
+            if(combinedst == artist_i.artist)
+                artistname = combinedst;
         }
 
         if(commandParts.at(0) == "ARTIST"
                 && commandParts.at(1) == artistname )
         {
-            printArtistgigs(artistname, gig_data);
+            printArtistgigs(artistname, finalData);
         }
     }
 
     commandParts.clear();
 }
+
+
 int main()
 {
     std::vector<Gig> gig_data;
     std::set<Gig> finalData;
-    std::set<std::string> artistsData;
-    std::set<std::string> stagesData;
     std::string file_name = "";
     std::cout << "Give a name for input file: ";
+    //reading data from fil
     getline(std::cin, file_name);
     std::ifstream file_obj(file_name);
     //Checking either file is opening or not.
@@ -353,33 +399,27 @@ int main()
         std::cout << "Error: Invalid format in file." << std::endl;
         return EXIT_FAILURE;
     }
+
+    std::ifstream file_objt(file_name);
+    readDataFromFile(file_objt, gig_data);
+    finalData= convertToSet(gig_data);
     if (!checkingDate(finalData))
     {
         std::cout << "Error: Invalid date."<< std::endl;
         return EXIT_FAILURE;
     }
-    std::ifstream file_objt(file_name);
-    readDataFromFile(file_objt, gig_data);
-    std::ifstream file_object(file_name);
-    artistsData= artistsName(file_object);
-    std::ifstream file_objectt(file_name);
-    //stagesData= stageData(file_objectt);
-    finalData= convertToSet(gig_data);
-    //printGig(gig_data.at(0));
-
-
+    if(!checkBookings(gig_data))
+    {
+        std::cout << "Error: Already exists." << std::endl;
+        return EXIT_FAILURE;
+    }
+    //Starts taking commands and permorms the execution accordingly
     std::string command;
     while (command != "QUIT" || command != "quit")
     {
         std::cout << "gigs> ";
         getline(std::cin, command);
-        //        for (auto & c: command)
-        //        {
-        //            c = toupper(c);
-        //        }
-        checkCommand(command, gig_data, finalData, artistsData);
-
-
+        checkCommand(command, gig_data, finalData);
     }
 
     return EXIT_SUCCESS;

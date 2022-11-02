@@ -19,6 +19,18 @@
  * artist_name;date;town_name;stage_name.
  * Otherwise the program execution terminates instantly (but still gracefully).
  *
+ * Program authors
+ * Student 1.
+ * Name: Noman Akbar
+ * Student number: 150596134
+ * UserID: mknoak
+ * E-Mail: noman.akbar@tuni.fi
+ * Student 2.
+ * NAME: Talha Mansoor
+ * Student number: 150595685
+ * UserID: vxtama
+ * E-Mail: talha.mansoor@tuni.fi
+ *
  * */
 #include <iostream>
 #include<fstream>
@@ -101,24 +113,7 @@ bool is_valid_date(const std::string& date_str)
 }
 
 
-bool checkingDate (std::ifstream &file_name)
-{
-    std::set <std::string> dateData;
-    std::string line;
-    std::vector <std::string> dataItems;
-    char delim = ';';
-    while(getline(file_name, line))
-    {
-        dataItems = split (line, delim);
-        if (!is_valid_date(line))
-        {
-            return false;
-        }
-        dateData.insert(dataItems.at(1));
-    }
-    file_name.close();
-    return true;
-}
+
 
 bool isFormatValid(std::ifstream & file_obj)
 {
@@ -170,6 +165,18 @@ void readDataFromFile(std::ifstream & file_obj, std::vector<Gig>& data)
     file_obj.close();
 }
 
+bool checkingDate (std::set<Gig> & gig_data)
+{
+    std::string dateData;
+    for(auto & date_i : gig_data)
+    {
+
+        std::cout << date_i.date << std::endl;
+        //        if(!is_valid_date(dateData))
+        //            return false;
+    }
+    return true;
+}
 void printGig(Gig const &gig)
 {
     std::cout << "Artists: " << gig.artist << "date: "
@@ -201,9 +208,10 @@ void print_artist(std::set<std::string> & gig_data)
     }
 
 }
-void print_stages(std::set<Gig> & gig_data)
+void print_stages(std::vector<Gig> & gig_data)
 {
     std::cout << "All gig places in alphabetical order:" <<std::endl;
+    //std::sort(gig_data.begin()->stage, gig_data.end()->stage, true);
     for(auto & b: gig_data)
     {
         std::cout << b.city << ", " << b.stage << std::endl;
@@ -212,9 +220,10 @@ void print_stages(std::set<Gig> & gig_data)
 }
 void printArtistgigs(std::string artistname, std::set<Gig> & gig_data)
 {
-    std::cout <<
-                 "Artist Elastinen has the following gigs in the order they are listed:"
-    << std::endl;
+    std::cout << "Artist "
+              << artistname
+              << " has the following gigs in the order they are listed:"
+              << std::endl;
     for(auto & b: gig_data)
     {
         if(b.artist == artistname)
@@ -253,7 +262,8 @@ std::string artistpresent(std::vector<std::string> & commandParts,
     }
     return artistname;
 }
-void checkCommand(std::string & command, std::set<Gig> gig_data,
+void checkCommand(std::string & command, std::vector<Gig> finalData,
+                  std::set<Gig> gig_data,
                   std::set<std::string> artistsData)
 {
 
@@ -266,18 +276,25 @@ void checkCommand(std::string & command, std::set<Gig> gig_data,
     }
     if(commandParts.size() == 1)
     {
-        if(commandParts.at(0) != "ARTISTS" && commandParts.at(0) != "STAGES" )
+        //        if(commandParts.at(0) != "ARTISTS" && commandParts.at(0) != "STAGES"
+        //        && commandParts.at(0) != "QUIT")
+        //        {
+        //
+        //        }
+
+        if (commandParts.at(0) == "ARTISTS")
         {
-            std::cout << "Error: Invalid input." << std::endl;
+            print_artist(artistsData);
         }
-    }
-    if (commandParts.size()== 1 && commandParts.at(0) == "ARTISTS")
-    {
-        print_artist(artistsData);
-    }
-    if (commandParts.size()== 1 && commandParts.at(0) == "STAGES")
-    {
-        print_stages(gig_data);
+        if (commandParts.at(0) == "STAGES")
+        {
+            print_stages(finalData);
+        }
+        if (commandParts.at(0) == "QUIT")
+        {
+            exit(0);
+        }
+        else std::cout << "Error: Invalid input." << std::endl;
     }
     if(commandParts.size() == 2)
     {
@@ -287,25 +304,30 @@ void checkCommand(std::string & command, std::set<Gig> gig_data,
         {
             printArtistgigs(artistname, gig_data);
         }
+        else std::cout << "Error: Not found." << std::endl;
     }
 
-    else std::cout << "Error: Not found." << std::endl;
     if(commandParts.size()== 3 && (commandParts.at(0) == "ARTSIST" ||
-       commandParts.at(0) == "STAGE"))
+                                   commandParts.at(0) == "STAGE"))
     {
         std::string secpos = commandParts.at(1);
         std::string trdpos = commandParts.at(2);
-
         secpos.erase(remove(secpos.begin(), secpos.end(), '"'), secpos.end());
-    }
+        trdpos.erase(remove(trdpos.begin(), trdpos.end(), '"'), trdpos.end());
+        std::string combinedst = secpos.append(trdpos);
+        std::string artistname;
+        for(auto & artist_i : artistsData)
+        {
+            if(combinedst == artist_i)
+                artistname = artist_i;
+        }
 
-    //    if(commandParts.size() == 2)
-    //    {
-    //        if(commandParts.at(0) == "STAGE" && commandParts.at(1) !=  gig2.stage)
-    //        {
-    //            std::cout << "Error: Not found." << std::endl;
-    //        }
-    //    }
+        if(commandParts.at(0) == "ARTIST"
+                && commandParts.at(1) == artistname )
+        {
+            printArtistgigs(artistname, gig_data);
+        }
+    }
 
     commandParts.clear();
 }
@@ -331,8 +353,7 @@ int main()
         std::cout << "Error: Invalid format in file." << std::endl;
         return EXIT_FAILURE;
     }
-    std::ifstream fileo(file_name);
-    if (not checkingDate(fileo))
+    if (!checkingDate(finalData))
     {
         std::cout << "Error: Invalid date."<< std::endl;
         return EXIT_FAILURE;
@@ -348,7 +369,7 @@ int main()
 
 
     std::string command;
-    while (command != "QUIT")
+    while (command != "QUIT" || command != "quit")
     {
         std::cout << "gigs> ";
         getline(std::cin, command);
@@ -356,7 +377,7 @@ int main()
         //        {
         //            c = toupper(c);
         //        }
-        checkCommand(command, finalData, artistsData);
+        checkCommand(command, gig_data, finalData, artistsData);
 
 
     }

@@ -177,7 +177,7 @@ int main() {
               std::cout << "Erroneous parameters!" << std::endl  << HELP_TEXT;
               continue;
             } else {
-              for(auto pair: user_ids) {
+              for(auto &pair: user_ids) {
                   print_data(*(pair.second));
                 }
             }
@@ -188,7 +188,7 @@ int main() {
               std::cout << "Erroneous parameters!" << std::endl << HELP_TEXT;
               continue;
             } else {
-              for(auto pair: student_numbers) {
+              for(auto &pair: student_numbers) {
                   print_data(*(pair.second));
                 }
             }

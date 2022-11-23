@@ -16,6 +16,7 @@
 #define UTILS_HH
 
 #include "book.hh"
+#include "cli.hh"
 #include <string>
 
 namespace Utils{

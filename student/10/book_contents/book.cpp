@@ -7,16 +7,18 @@ Book::Book()
 
 Book::~Book()
 {
-
+    // deallocate memory
+    for (std::pair<std::string, Chapter*> ch : chapters_)
+    {
+        delete ch.second;
+    }
 }
 
 void Book::addNewChapter(const std::string &id, const std::string &fullName, int length)
 {
     // check if book already exists
     if (chapters_.find(id) != chapters_.end())
-    {
-        std::cout<<"Error: Already exists."<<std::endl;
-    }
+        std::cout << "Error: Already exists." << std::endl;
 
     // Add new chapter
     // allocating memory
@@ -33,9 +35,7 @@ void Book::addRelation(const std::string &subchapter, const std::string &parentC
     // check if chapter exist
     if(chapters_.find(subchapter) == chapters_.end()
             || chapters_.find(parentChapter) == chapters_.end())
-    {
-        std::cout<<"Error: Already exists."<<std::endl;
-    }
+        return;
 
     // Fetch the sub chapter
     Chapter *sub_ptr = chapters_.at(subchapter),
@@ -48,27 +48,70 @@ void Book::addRelation(const std::string &subchapter, const std::string &parentC
 
 void Book::printIds(Params params) const
 {
-
+    std::map<std:: string, std::string> mp_ids = {};
+    std::cout << "Book has " << chapters_.size() << " chapters:" << std::endl;
+    for (auto &ch : chapters_)
+    {
+        mp_ids.insert({ch.second->fullName_, ch.second->id_});
+    }
+    for (auto itr = mp_ids.begin(); itr != mp_ids.end(); ++itr)
+    {
+        std::cout   << itr->first << " --- "
+                    << itr->second
+                    << std::endl;
+    }
 }
 
 void Book::printContents(Params params) const
 {
+    // avoid repetetive prints finding the top chapter first
+    std::set<Chapter*> topmost = {};
 
+    for (auto &ch : chapters_)
+    {
+        // top most chapters ----- > Doesn't have parent chapter
+        if(ch.second->parentChapter_ == nullptr)
+        {
+            topmost.insert(ch.second);
+        }
+    }
+    int counter = 1;
+    for (Chapter *ch : topmost )
+    {
+        printChapterRecursively(ch, "",counter++);
+    }
 }
 
 void Book::close(Params params) const
 {
-
+    Chapter *chptr = findChapter(params[0]);
+    if (chptr != nullptr)
+    {
+        chptr->isOpen_=false;
+    }
+    else{
+        std::cout << "Error: Not found: " << params[0] << std::endl;
+    }
 }
 
 void Book::open(Params params) const
 {
-
+    Chapter *chptr = findChapter(params[0]);
+    if (chptr != nullptr)
+    {
+        chptr->isOpen_=true;
+    }
+    else{
+        std::cout << "Error: Not found: " << params[0] << std::endl;
+    }
 }
 
 void Book::openAll(Params params) const
 {
-
+    for (auto &ch : chapters_)
+    {
+        ch.second->isOpen_=true;
+    }
 }
 
 void Book::printParentsN(Params params) const
@@ -138,10 +181,27 @@ IdSet Book::vectorToIdSet(const std::vector<Chapter *> &container) const
     return idSet;
 }
 
-void Book::printChapterRecursively(const Chapter *ptr, const std::string indents)
+void Book::printChapterRecursively(const Chapter *ptr,
+                                   const std::string &indents,
+                                   int index) const
 {
     // head recursive
 
     // trivial case is when chapert does not have subchapter
     char sign = ptr->isOpen_? '-' : '+';
+    std::cout  << sign << " " << indents << index << ". "<<
+                  ptr->fullName_ << " ( " << ptr->length_ << " ) " <<
+                  std::endl;
+
+    // Check if opened
+    if (ptr->isOpen_)
+    {
+        int counter = 1;
+        for (Chapter *ch : ptr->subchapters_)
+        {
+            printChapterRecursively(ch,
+                                    indents + "  ",
+                                    counter++);
+        }
+    }
 }

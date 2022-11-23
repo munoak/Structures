@@ -18,14 +18,17 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 #include <iostream>
 #include <unordered_map>
+
 
 
 // Named constants to improve readability in other modules
 const std::string EMPTY = "";
 const int NO_LENGTH = -1;
 
+const std::string ERROR = "Error: Already exists.";
 // Command parameters have been collected into a vector. In this way each
 // method implementing a command has the same parameters (amount and type).
 // If a command has no parameters, the vector is empty.
@@ -37,9 +40,9 @@ struct Chapter
     std::string id_ = EMPTY;
     std::string fullName_ = EMPTY;
     int length_ = 0;
-    char isOpen_ = '+';
+    bool isOpen_ = true;
     Chapter* parentChapter_ = nullptr;
-    std::vector<Chapter*> subcnhapters_;
+    std::vector<Chapter*> subchapters_ = { };
 };
 
 using IdSet = std::set<std::string>;
@@ -128,10 +131,12 @@ private:
                     const IdSet& container) const;
 
     // Turns a vector of chapters to a set of IDs.
-    IdSet vectorToIdSet(const std::vector<Chapter*>& container) const;
     // Needed only for printSubchapters.
+    IdSet vectorToIdSet(const std::vector<Chapter*>& container) const;
+
     void printChapterRecursively(const Chapter *ptr,
-                                 const std::string indents = "");
+                                 const std::string &indents = "",
+                                 int index = 1) const ;
 
     // add an existance checker to remove redunduncy
     // if (...find(...) != ......end())

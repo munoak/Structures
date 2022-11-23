@@ -46,7 +46,7 @@ void Book::addRelation(const std::string &subchapter, const std::string &parentC
     sub_ptr->parentChapter_ = parent_ptr;
 }
 
-void Book::printIds(Params params) const
+void Book::printIds(Params) const
 {
     std::map<std:: string, std::string> mp_ids = {};
     std::cout << "Book has " << chapters_.size() << " chapters:" << std::endl;
@@ -62,7 +62,7 @@ void Book::printIds(Params params) const
     }
 }
 
-void Book::printContents(Params params) const
+void Book::printContents(Params) const
 {
     // avoid repetetive prints finding the top chapter first
     std::set<Chapter*> topmost = {};
@@ -106,7 +106,7 @@ void Book::open(Params params) const
     }
 }
 
-void Book::openAll(Params params) const
+void Book::openAll(Params) const
 {
     for (auto &ch : chapters_)
     {
@@ -114,42 +114,64 @@ void Book::openAll(Params params) const
     }
 }
 
-void Book::printParentsN(Params params) const
+void Book::printParentsN(Params) const
 {
 
 }
 
-void Book::printSubchaptersN(Params params) const
+void Book::printSubchaptersN(Params) const
 {
 
 }
 
-void Book::printSiblingChapters(Params params) const
+void Book::printSiblingChapters(Params) const
 {
 
 }
 
 void Book::printTotalLength(Params params) const
 {
+    int size =0;
+    Chapter *chptr = findChapter(params[0]);
+    for(auto &ch : chapters_)
+    {
+        if (ch.second->id_ == chptr->id_ || ch.second->parentChapter_ == chptr)
+            size += ch.second->length_;
+    }
+    std::cout << "Total length of " << params[0] << " is " << size << std::endl;
 
 }
 
 void Book::printLongestInHierarchy(Params params) const
 {
+    int size =0;
+    Chapter *chptr = findChapter(params[0]);
+    for(auto &ch : chapters_)
+    {
+        if (ch.second->id_ == chptr->id_){
+
+            for(uint i=0; i< ch.second->subchapters_.size() ; i++){
+                if(ch.second->subchapters_.at(i)->length_ > chptr->length_)
+                {
+                    size= ch.second->subchapters_.at(i)->length_;
+                }
+            }
+        }
+    }
+        std::cout << "With the length of " << size << params[0] << " is " << size << std::endl;
 
 }
-
-void Book::printShortestInHierarchy(Params params) const
+void Book::printShortestInHierarchy(Params) const
 {
 
 }
 
-void Book::printParent(Params params) const
+void Book::printParent(Params) const
 {
 
 }
 
-void Book::printSubchapters(Params params) const
+void Book::printSubchapters(Params) const
 {
 
 }
@@ -166,7 +188,7 @@ Chapter *Book::findChapter(const std::string &id) const
     return chapter_ptr;
 }
 
-void Book::printGroup(const std::string &id, const std::string &group, const IdSet &container) const
+void Book::printGroup(const std::string &, const std::string &, const IdSet &) const
 {
 
 }

@@ -96,14 +96,19 @@ void Book::close(Params params) const
 
 void Book::open(Params params) const
 {
-    Chapter *chptr = findChapter(params[0]);
-    if (chptr != nullptr)
-    {
-        chptr->isOpen_=true;
-    }
-    else{
-        std::cout << "Error: Not found: " << params[0] << std::endl;
-    }
+    Chapter *ch = findChapter(params[0]);
+      if (ch != nullptr)
+        {
+          ch->isOpen_=true;
+          for (auto sub_ch : ch->subchapters_)
+            {
+              if(sub_ch->subchapters_.size() !=0)
+              sub_ch->isOpen_=false;
+            }
+        }
+      else{
+          std::cout << "Error: Not found: " << params[0] << std::endl;
+        }
 }
 
 void Book::openAll(Params) const
@@ -163,15 +168,31 @@ void Book::printSiblingChapters(Params params) const
 void Book::printTotalLength(Params params) const
 {
     int size =0;
+    //std::string new_parent;
+    //Chapter *new_parent = nullptr;
     Chapter *chptr = findChapter(params[0]);
     if(chptr !=nullptr)
     {
         for(auto &ch : chapters_)
         {
-            if (ch.second->id_ == chptr->id_ || ch.second->parentChapter_ == chptr)
+            if (ch.second->id_ == chptr->id_){
                 size += ch.second->length_;
+                for(auto sub_ch: ch.second->subchapters_)
+                {
+                    size += sub_ch->length_;
+                    for(auto sub_2_ch : sub_ch->subchapters_)
+                    {
+                        size += sub_2_ch->length_;
+                        for(auto sub_3_ch: sub_2_ch->subchapters_)
+                        {
+                            size += sub_3_ch->length_;
+                        }
+                    }
+                }
+            }
         }
-        std::cout << "Total length of " << params[0] << " is " << size << std::endl;
+        std::cout << "Total length of " << params[0]
+                  << " is " << size << "." << std::endl;
     }
     else
         std::cout << "Error: Not found: " << params[0] << std::endl;
@@ -180,34 +201,35 @@ void Book::printTotalLength(Params params) const
 
 void Book::printLongestInHierarchy(Params params) const
 {
+    int size =0;
+    std::string longestId;
     Chapter *chptr = findChapter(params[0]);
     if(chptr!=nullptr)
     {
-        int size =0;
-        std::string longestId;
-        bool is_longest = false;
         for(auto &ch : chapters_)
         {
-            if (ch.second->id_ == chptr->id_ && ch.second->subchapters_.size() != 0)
-            {
-                for(uint i=0; i< ch.second->subchapters_.size() ; i++){
-                    if(ch.second->subchapters_.at(i)->length_ > chptr->length_)
+            if (ch.second->id_ == chptr->id_){
+                if(ch.second->length_ >= chptr->length_)
+                {
+                    size = ch.second->length_;
+                    longestId = ch.second->id_;
+                    for(auto sub_ch: ch.second->subchapters_)
                     {
-                        size= ch.second->subchapters_.at(i)->length_;
-                        longestId = ch.second->subchapters_.at(i)->id_;
+                        if(sub_ch->length_ > chptr->length_)
+                        {
+                            size = sub_ch->length_;
+                            longestId = sub_ch->id_;
+                            for(auto sub_2_ch: sub_ch->subchapters_)
+                            {
+                                if(sub_2_ch->length_ > chptr->length_)
+                                {
+                                    size = sub_ch->length_;
+                                    longestId = sub_ch->id_;
+                                }
+                            }
+                        }
                     }
                 }
-                is_longest = true;
-            }
-            if(ch.second->parentChapter_ == chptr)
-            {
-                if(ch.second->parentChapter_->length_ > chptr->length_)
-                {
-                    size= ch.second->parentChapter_->length_;
-                    longestId = ch.second->parentChapter_->id_;
-                }
-
-                is_longest = true;
             }
             if(ch.second->subchapters_.size() == 0)
             {
@@ -217,11 +239,50 @@ void Book::printLongestInHierarchy(Params params) const
                 break;
             }
         }
-        if(is_longest)
-            std::cout << "With the length of " << size << ", " << longestId
-                      << " is the longest chapter in " << params[0]
-                      <<"'s hierarchy."<< std::endl;
+        std::cout << "With the length of " << size << ", " << longestId
+                  << " is the longest chapter in " << params[0]
+                  <<"'s hierarchy."<< std::endl;
 
+        //        int size =0;
+        //        std::string longestId;
+        //        bool is_longest = false;
+        //        for(auto &ch : chapters_)
+        //        {
+        //            if (ch.second->id_ == chptr->id_ && ch.second->subchapters_.size() != 0)
+        //            {
+        //                for(auto sub_ch: ch.second->subchapters_){
+        //                    if(sub_ch->length_ > chptr->length_)
+        //                    {
+        //                        size= sub_ch->length_;
+        //                        longestId = sub_ch->id_;
+        //                    }
+        //                }
+        //                is_longest = true;
+        //            }
+        //            if(ch.second->parentChapter_ == chptr)
+        //            {
+        //                if(ch.second->parentChapter_->length_ > chptr->length_)
+        //                {
+        //                    size= ch.second->parentChapter_->length_;
+        //                    longestId = ch.second->parentChapter_->id_;
+        //                }
+
+        //                is_longest = true;
+        //            }
+        //            if(ch.second->subchapters_.size() == 0)
+        //            {
+        //                size = ch.second->length_;
+        //                std::cout << "With the length of " << size << ", " << params[0]
+        //                          << " is the longest chapter in their hierarchy."<< std::endl;
+        //                break;
+        //            }
+        //        }
+        //        if(is_longest)
+        //            std::cout << "With the length of " << size << ", " << longestId
+        //                      << " is the longest chapter in " << params[0]
+        //                      <<"'s hierarchy."<< std::endl;
+
+        //    }
     }
     else
         std::cout << "Error: Not found: " << params[0] << std::endl;

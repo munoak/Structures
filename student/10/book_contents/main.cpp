@@ -11,7 +11,13 @@
 #       * Passes the parsed data to Book class                              #
 #       * Launches Cli module                                               #
 # Notes: * This is an exercise program.                                     #
-#        * Student's don't touch this file.                                 #
+#        * Student's don't touch this file.
+#
+#        * Program author
+#        * Name: Noman Akbar
+#        * Student number: 150596134
+#        * UserID: mknoak
+#        * E-Mail: noman.akbar@tuni.fi
 #############################################################################
 */
 

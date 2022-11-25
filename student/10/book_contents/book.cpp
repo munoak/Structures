@@ -216,7 +216,9 @@ void Book::printLongestInHierarchy(Params params) const
                 longest_id = param_name.at(0)->id_;
             }
 
-            param_name.insert( param_name.end(), param_name.at(0)->subchapters_.begin(), ch_vec.at(0)->subchapters_.end());
+            param_name.insert( param_name.end(),
+                       param_name.at(0)->subchapters_.begin(),
+                       param_name.at(0)->subchapters_.end());
             param_name.erase(param_name.begin());
         }
         if (longest_id != params[0])

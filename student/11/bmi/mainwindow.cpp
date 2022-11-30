@@ -20,17 +20,17 @@ void MainWindow::on_countButton_clicked()
 
     double weight_ = weight.toDouble();
     double height_ = height.toDouble();
-
+   // double cm_feet = height_*0.0328;
     double bmi = weight_/(height_*height_*0.0001);
 
     ui->resultLabel->setText(QString::number(bmi));
 
-    if (bmi <= 18.5)
-        ui->infoTextBrowser->setText("You are underweight.");
-
-    if(bmi >= 25)
+    if(bmi > 25)
         ui->infoTextBrowser->setText("You are overweight.");
 
-    else
+    if (bmi < 18.5)
+        ui->infoTextBrowser->setText("You are underweight.");
+
+    if(bmi >= 18.5 && bmi <= 25)
         ui->infoTextBrowser->setText("Your weight is normal.");
 }

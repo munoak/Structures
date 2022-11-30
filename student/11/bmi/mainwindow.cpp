@@ -21,7 +21,7 @@ void MainWindow::on_countButton_clicked()
     double weight_ = weight.toDouble();
     double height_ = height.toDouble();
 
-    double bmi = weight_/(height_*height_*0.0328);
+    double bmi = weight_/(height_*height_*0.0001);
 
     ui->resultLabel->setText(QString::number(bmi));
 
